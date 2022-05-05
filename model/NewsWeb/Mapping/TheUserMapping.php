@@ -3,8 +3,9 @@
 namespace NewsWeb\Mapping;
 
 use NewsWeb\AbstractMapping;
+use NewsWeb\Trait\userEntryProtectionTrait;
 
-class TheuserMapping extends \NewsWeb\AbstractMapping
+class theuserMapping extends \NewsWeb\AbstractMapping
 {
 
     // Propriétés
@@ -16,6 +17,8 @@ class TheuserMapping extends \NewsWeb\AbstractMapping
     private string $theuseruniqid;
     private int $theuseracivate;
     private int $permission_idpermission;
+
+    use userEntryProtectionTrait;
 
     // Getters
 
@@ -70,7 +73,7 @@ class TheuserMapping extends \NewsWeb\AbstractMapping
     /**
      * @return int
      */
-    public function getPermissionIdpermission(): int
+    public function getPermission_idpermission(): int
     {
         return $this->permission_idpermission;
     }
@@ -84,10 +87,12 @@ class TheuserMapping extends \NewsWeb\AbstractMapping
     public function setIdtheuser(int $idtheuser): TheuserMapping
     {
         // dépasse 45 caractères
-        if(strlen($idtheuser)>45){
+        if(empty($idtheuser)){
+            trigger_error("Champ vide !", E_USER_NOTICE);
+        }elseif(strlen($idtheuser)>45){
             // affichage de l'erreur
             trigger_error("L'ID de l'utilisateur ne peut pas dépasser 9999999999", E_USER_NOTICE);
-        }else {
+        } else {
             $this->idtheuser = $idtheuser;
         }
         return $this;
@@ -100,9 +105,10 @@ class TheuserMapping extends \NewsWeb\AbstractMapping
      */
     public function setTheuserlogin(string $theuserlogin): TheuserMapping
     {
-        if(strlen($theuserlogin) > 50)
-        {
-            trigger_error("L'ID de l'utilisateur ne peut pas dépasser 9999999999", E_USER_NOTICE);
+        if(empty($theuserlogin)) {
+            trigger_error('Champ "Login" vide !', E_USER_NOTICE);
+        } elseif (!(strlen($theuserlogin) > 4 && strlen($theuserlogin) < 51)) {
+            trigger_error("Le login doit contenir entre 5 et 50 caractères.", E_USER_NOTICE);
         } else {
             $this->theuserlogin = $theuserlogin;
         }
@@ -129,8 +135,9 @@ class TheuserMapping extends \NewsWeb\AbstractMapping
      */
     public function setTheusermail(string $theusermail): TheuserMapping
     {
-        if(strlen($theusermail) > 255) {
-            trigger_error("L'adresse e-mail est trop longue ! ", E_USER_NOTICE);
+
+        if((strlen($theusermail) > 255) && (!filter_var(trim($theusermail), FILTER_VALIDATE_EMAIL))){
+            trigger_error("L'adresse e-mail est trop longue  ou le format est invalide ! ", E_USER_NOTICE);
         } else {
             $this->theusermail = $theusermail;
         }
@@ -157,7 +164,7 @@ class TheuserMapping extends \NewsWeb\AbstractMapping
      */
     public function setTheuseractivate(int $theuseractivate): TheuserMapping
     {
-        if(!($theuseractivate >= 0 && $theuseractivate < 3)){
+        if(!($theuseractivate >= 0 && $theuseractivate < 3) || (!$theuseractivate)){
             trigger_error("Identifiant de l'état d'activité invalide !");
         } else {
             $this->theuseracivate = $theuseractivate;
@@ -169,7 +176,7 @@ class TheuserMapping extends \NewsWeb\AbstractMapping
      * @param int $permission_idpermission
      * @return TheuserMapping
      */
-    public function setPermissionIdpermission(int $permission_idpermission): TheuserMapping
+    public function setPermission_idpermission(int $permission_idpermission): TheuserMapping
     {
         if($permission_idpermission < 1 || $permission_idpermission > 3) {
             trigger_error("La permission introduite n'existe pas !", E_USER_NOTICE);
