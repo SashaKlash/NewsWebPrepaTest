@@ -4,7 +4,6 @@ use NewsWeb\Manager\thearticleManager;
 use NewsWeb\Manager\thesectionManager;
 use NewsWeb\Manager\theuserManager;
 use NewsWeb\Mapping\theuserMapping;
-use NewsWeb\Trait\userEntryProtectionTrait;
 
 // sections
 
@@ -84,9 +83,9 @@ elseif (isset($_GET['article'])):
 elseif (isset($_GET['user']) && ctype_digit($_GET['user'])):
     $idUser = (int)$_GET['user'];
 
-    $theUserDatas = $thearticleManager->thearticleSelectAllByIdUser ($idUser);
+    $theUserDatas = $thearticleManager->thearticleSelectAllByIdUser($idUser);
 
-    if(!$theUserDatas):
+    if (!$theUserDatas):
         echo $twig->render('public/error404.html.twig', [
             'menu' => $thesectionMenu,
             'message' => "Ces articles n'existent plus !",
@@ -98,28 +97,7 @@ elseif (isset($_GET['user']) && ctype_digit($_GET['user'])):
         ]);
 
     endif;
-/*
 
-
-        // appel de l'erreur 404
-        echo $twig->render('public/error404.html.twig', [
-            'menu'    => $thesectionMenu,
-            'message' => $theSectionDatas,
-        ]);
-    else:
-
-        // Selection des articles de la section
-        $articles = $thearticleManager->thearticleSelectAllFromSection($theSectionDatas['idthesection']);
-
-        // affichage de le section
-        echo $twig->render('public/section.html.twig', [
-            'menu'     => $thesectionMenu,
-            'section'  => $theSectionDatas,
-            'articles' => $articles,
-        ]);
-
-    endif;
-*/
 // contact
 elseif (isset($_GET['contact'])):
     if (isset($_POST["name"], $_POST["email"], $_POST["message"])) {
@@ -162,14 +140,16 @@ elseif (isset($_GET['connect'])):
         } else {
             echo $twig->render("public/connexion.html.twig", [
                 'menu' => $thesectionMenu,
-                "error" => "Wrong Login or Password!"
+                "error" => "Wrong Login or Password!",
             ]);
         }
     } else {
         echo $twig->render("public/connexion.html.twig", ['menu' => $thesectionMenu,]);
     }
 else:
+    $lastArticles = $thearticleManager->thearticleSelectAll(3, 0);
     echo $twig->render('public/homepage.html.twig', [
         'menu' => $thesectionMenu,
+        "lastArticles" => $lastArticles,
     ]);
 endif;
