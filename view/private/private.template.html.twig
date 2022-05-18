@@ -1,0 +1,19 @@
+{% extends "base.html.twig" %}
+{# On écrase le block meta DÉJÀ existant dans base.html.twig  #}
+{% block meta %}
+    {#  #}
+    {{ parent() }}
+     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+     <meta name="description" content="">
+     <meta name="author" content="Blob">
+{% endblock %}
+{% block pagetype %}page-top{% endblock %}
+{% block body %}
+    <!-- Page Wrapper -->
+    <div id="wrapper">
+    {% block sidebar %}
+        
+    {% endblock%}
+    </div>
+{% endblock %}
